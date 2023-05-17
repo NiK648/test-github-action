@@ -1,0 +1,57 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Dev - Build and Deployment
+
+on:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  trigger-codebuild:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-south-1
+      - name: Run CodeBuild
+        uses: aws-actions/aws-codebuild-run-build@v1
+        with:
+          project-name: test-github-action-build
+#   deploy:
+#     needs: build-and-push-image
+#     runs-on: ubuntu-latest
+#     steps:
+#     - name: Checkout
+#       uses: appleboy/ssh-action@v0.1.10
+#       env:
+#         PAT: ${{ secrets.PACKAGE_TOKEN }}
+#       with:
+#         host: ${{ secrets.SSH_HOST }}
+#         username: ${{ secrets.SSH_USERNAME }}
+#         password: ${{ secrets.SSH_PASSWORD }}
+#         script: |
+#           echo $PAT
+#           docker stop infomax-ui
+#           docker rm infomax-ui
+#           docker image rm ghcr.io/shanidyemkey/infomaxui:develop
+#           echo "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" | docker login ghcr.io -u shanidyemkey --password-stdin
+#           docker run -d -p 80:80 --net infomax-net --name infomax-ui ghcr.io/shanidyemkey/infomaxui:develop
+#           echo "completed"
+

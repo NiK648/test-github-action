@@ -6,6 +6,6 @@ phases:
       nodejs: 18
   build:
     commands:
-      - echo build started on 'date'
+      - echo build started on `date`
       - npm
       - npm run build

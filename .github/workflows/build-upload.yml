@@ -21,7 +21,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0      
+        fetch-depth: 0    
+        
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+      id: extract_branch        
 
     - name: Setup Node.js
       uses: actions/setup-node@v2
@@ -50,5 +55,5 @@ jobs:
     - name: Deploy
       if: success()
       run: |
-        aws s3 rm s3://${{ env.S3_BUCKET }}/ --recursive
-        aws s3 sync ./dist/test-github-action s3://${{ env.S3_BUCKET }}/${{ github.ref }}
+        aws s3 rm s3://${{ env.S3_BUCKET }}/${{ steps.extract_branch.outputs.branch }} --recursive
+        aws s3 sync ./dist/test-github-action s3://${{ env.S3_BUCKET }}/${{ steps.extract_branch.outputs.branch }}

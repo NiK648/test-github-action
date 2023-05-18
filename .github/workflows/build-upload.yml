@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       NODE_VERSION: '18'
-      S3_BUCKET: s3://nms-codebuild-bucket
+      S3_BUCKET: nms-codebuild-bucket
       AWS_REGION: ap-south-1
     steps:
     - name: Configure AWS Credentials
